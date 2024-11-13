@@ -1,4 +1,4 @@
-# Travel Social Network - Backend
+# Bookstore Backend Microservice
 
 ![Swagger Backend](Swagger.png)
 
