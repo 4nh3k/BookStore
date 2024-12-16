@@ -211,6 +211,7 @@ namespace Ordering.API.Controllers
             order.OrderStatusId = orderStatusId;
 
             _orderRepository.UpdateOrder(order);
+            _orderRepository.SaveChangesAsync();
 
             return Ok("Order status updated successfully");
         }

@@ -30,9 +30,19 @@ namespace Identity.API.Services
                 return user.Id;
             }
 
-            _logger.LogInformation($"Failed to create new user {user.UserName} with role Customer");
+            // Check if the error is related to email being already taken
+            var emailError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateEmail");
+            if (emailError != null)
+            {
+                _logger.LogWarning($"Email '{user.Email}' is already taken.");
+                return "Email is already taken.";
+            }
+
+            // Log and return other errors
+            _logger.LogWarning($"Failed to create new user {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
             return string.Join(", ", result.Errors.Select(e => e.Description));
         }
+
 
         public async Task<IdentityResult> DeleteUserProfileAsync(string userId)
         {

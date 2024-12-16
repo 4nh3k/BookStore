@@ -204,13 +204,21 @@ namespace Identity.API.Controllers
                 Email = user.Email,
             };
 
-            var userId = await profileService.CreateUserAsync(applicationUser, user.Password);
-            if (string.IsNullOrEmpty(userId))
+            var result = await profileService.CreateUserAsync(applicationUser, user.Password);
+
+            if (result == "Email is already taken.")
             {
-                return BadRequest("Something wrong with creating user, please try again");
+                return Conflict(result);
             }
-            return Ok($"User with {user.Username} has been created, with userId: {userId}");
+
+            if (result.StartsWith("Failed to"))
+            {
+                return BadRequest("Something went wrong with creating the user. Please try again.");
+            }
+
+            return Ok($"User with username {user.Username} has been created, with userId: {result}");
         }
+
 
         [HttpGet("profile/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
