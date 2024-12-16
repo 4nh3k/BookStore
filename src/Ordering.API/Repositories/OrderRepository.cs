@@ -60,13 +60,12 @@ namespace Ordering.API.Repositories
             var query = _context.Set<Order>().AsQueryable()
                  .OrderBy(order => order.Id)
                  .Include(o => o.Buyer)
-                 .Include(o => o.OrderStatus)
-                 .Skip(pageIndex * pageSize)
-                 .Take(pageSize);
+                 .Include(o => o.OrderStatus);
 
             var totalItems = await query.LongCountAsync();
 
-            var itemsInPage = await query.ToListAsync();
+            var itemsInPage = await query.Skip(pageIndex * pageSize)
+                 .Take(pageSize).ToListAsync();
 
             return new PaginatedItems<Order>(
                 pageIndex,
@@ -81,13 +80,13 @@ namespace Ordering.API.Repositories
                  .OrderBy(order => order.Id)
                  .Where(order => order.BuyerId == buyerId)
                  .Include(o => o.Buyer)
-                 .Include(o => o.OrderStatus)
-                 .Skip(pageIndex * pageSize)
-                 .Take(pageSize);
+                 .Include(o => o.OrderStatus);
 
             var totalItems = await query.LongCountAsync();
 
-            var itemsInPage = await query.ToListAsync();
+            var itemsInPage = await query
+                 .Skip(pageIndex * pageSize)
+                 .Take(pageSize).ToListAsync();
 
             return new PaginatedItems<Order>(
                 pageIndex,
