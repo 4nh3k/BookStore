@@ -50,8 +50,8 @@ namespace Ordering.API.Controllers
             {
                 LineItems = lineItems,
                 Mode = "payment",
-                SuccessUrl = "http://localhost:3000/payment-success",
-                CancelUrl = "http://localhost:3000/payment-cancel"
+                SuccessUrl = "https://localhost:3000/payment-success",
+                CancelUrl = "https://localhost:3000/payment-cancel"
             };
 
             var service = new SessionService();

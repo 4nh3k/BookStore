@@ -28,10 +28,17 @@ namespace Ordering.API.Controllers
 
             if (buyer == null)
             {
-                _logger.LogInformation("The buyer is null");
-                return BadRequest("Buyer does not exist");
-            }
+                _logger.LogInformation("The buyer is null, begin create new buyer");
+                await _buyerRepository.AddAsync(new Buyer
+                {
+                    Id = buyerId,
+                    Name = "N/A"
+                });
 
+                await _buyerRepository.SaveChangeAsync();
+
+                buyer = await _buyerRepository.FindAsync(buyerId);
+            }
 
             _logger.LogInformation("Begin create address");
             var buyerAddress = buyer.VerifyOrAddAddress(addAddress);

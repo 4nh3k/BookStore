@@ -47,10 +47,10 @@ namespace Identity.API.Controllers
 
             string subject = "Password Recovery Email";
 
-            string htmlBody = @"<h1 style='color: #1A56DB;'>Welcome to Our Service!</h1>
+            string htmlBody = $@"<h1 style='color: #1A56DB;'>Welcome to Our Service!</h1>
             <p>Dear User,</p>
             <p>It seems you've requested assistance in resetting your password. We're here to help you securely regain access to your account.</p>
-            <p>Here is your token for reset your password</p>
+            <p>Here is your token for reset your password: {resetPassToken}</p>
             <p>If you have any questions, feel free to reply to this email.</p>
             <p>Best regards,<br>Aoitome</p>";
 
