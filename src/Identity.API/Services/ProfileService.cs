@@ -19,6 +19,24 @@ namespace Identity.API.Services
         public async Task<string> CreateUserAsync(ApplicationUser user, string password)
         {
             _logger.LogInformation($"Began creating new user {user.UserName}");
+
+            // Check if the email is already taken
+            var existingEmailUser = await _userManager.FindByEmailAsync(user.Email);
+            if (existingEmailUser != null)
+            {
+                _logger.LogWarning($"Email '{user.Email}' is already taken.");
+                return "Email is already taken.";
+            }
+
+            // Check if the username is already taken
+            var existingUsernameUser = await _userManager.FindByNameAsync(user.UserName);
+            if (existingUsernameUser != null)
+            {
+                _logger.LogWarning($"Username '{user.UserName}' is already taken.");
+                return "Username is already taken.";
+            }
+
+            // Create the new user
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
@@ -30,19 +48,10 @@ namespace Identity.API.Services
                 return user.Id;
             }
 
-            // Check if the error is related to email being already taken
-            var emailError = result.Errors.FirstOrDefault(e => e.Code == "DuplicateEmail");
-            if (emailError != null)
-            {
-                _logger.LogWarning($"Email '{user.Email}' is already taken.");
-                return "Email is already taken.";
-            }
-
             // Log and return other errors
             _logger.LogWarning($"Failed to create new user {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
             return string.Join(", ", result.Errors.Select(e => e.Description));
         }
-
 
         public async Task<IdentityResult> DeleteUserProfileAsync(string userId)
         {

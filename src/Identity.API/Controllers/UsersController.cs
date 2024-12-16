@@ -190,6 +190,7 @@ namespace Identity.API.Controllers
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesDefaultResponseType]
         public async Task<IActionResult> CreateUser([FromBody] UserRegisterDTO user)
         {
@@ -208,7 +209,12 @@ namespace Identity.API.Controllers
 
             if (result == "Email is already taken.")
             {
-                return Conflict(result);
+                return Conflict("The email address is already registered.");
+            }
+
+            if (result == "Username is already taken.")
+            {
+                return Conflict("The username is already taken. Please try another one.");
             }
 
             if (result.StartsWith("Failed to"))
